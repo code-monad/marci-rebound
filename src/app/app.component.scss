@@ -1,0 +1,69 @@
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding: 0 24px;
+    background: #001529;
+  }
+
+  .text-lg {
+    color: #fff;
+    margin-left: auto;
+  }
+
+  .totalnodes {
+    margin-left: 20px;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  .logo-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    height: 40px;
+  }
+  
+  .button-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  .network-button {
+    background-color: transparent;
+    border: 1px solid #1890ff;
+    color: #1890ff;
+    box-shadow: none;
+    transition: all 0.3s ease-in-out;
+  
+    &:hover {
+      background-color: #1890ff;
+      color: #fff;
+    }
+  
+    &:focus {
+      outline: none;
+    }
+  
+    &:active {
+      transform: translateY(1px);
+    }
+  
+    &.ant-btn-primary {
+      border-color: #1890ff;
+      color: #fff;
+  
+      &:hover {
+        background-color: #1890ff;
+        color: #fff;
+        border-color: #1890ff;
+      }
+    }
+  }
+
+ 
