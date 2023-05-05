@@ -15,6 +15,7 @@ import {NzLayoutModule} from "ng-zorro-antd/layout";
 import {NzTableModule} from "ng-zorro-antd/table";
 import {NzCardModule} from "ng-zorro-antd/card";
 import {NzButtonModule} from "ng-zorro-antd/button";
+import {NzToolTipModule} from "ng-zorro-antd/tooltip";
 import {TimeElapsedPipe } from './time-elapsed.pipe';
 import {NzAvatarModule} from "ng-zorro-antd/avatar";
 import {NgxFlagIconCssModule } from 'ngx-flag-icon-css';
@@ -24,7 +25,7 @@ registerLocaleData(en);
 
 @NgModule({
   declarations: [AppComponent, TimeElapsedPipe],
-  imports: [BrowserModule, HttpClientModule, FormsModule, BrowserAnimationsModule, NzLayoutModule, NzTableModule, NzCardModule, NzButtonModule,NzAvatarModule, NgxFlagIconCssModule],
+  imports: [BrowserModule, HttpClientModule, FormsModule, BrowserAnimationsModule, NzLayoutModule, NzTableModule, NzCardModule, NzButtonModule,NzAvatarModule, NgxFlagIconCssModule, NzToolTipModule],
   providers: [
     { provide: NZ_I18N, useValue: en_US }
   ],

@@ -28,7 +28,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let peer of peers$ | async">
-            <td>{{ peer.ip }}</td>
+            <td nz-tooltip [nzTooltipTitle]="peer.address">{{ peer.ip }}</td>
             <td>{{ peer.version }}</td>
             <td>{{ peer.last_seen.secs_since_epoch | timeElapsed}}</td>
             <td>

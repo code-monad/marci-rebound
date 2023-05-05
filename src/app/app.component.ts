@@ -7,6 +7,7 @@ interface Peer {
   id: number;
   ip: string;
   version: string;
+  address: string;
   last_seen: {
     secs_since_epoch: number;
     nanos_since_epoch: number;
