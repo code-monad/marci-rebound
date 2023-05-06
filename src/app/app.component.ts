@@ -1,7 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Chart } from '@antv/g2';
+import { Chart} from '@antv/g2';
 import { map } from 'rxjs/operators';
 
 interface Peer {
@@ -50,7 +50,6 @@ export class AppComponent implements AfterViewInit {
   pageSize = 10;
   network = 'mirana';
   totalNodes = 0;
-  peerList = [];
 
   constructor(private http: HttpClient) {
     this.loadPeers();
@@ -59,13 +58,11 @@ export class AppComponent implements AfterViewInit {
     }, 10000);
   }
   ngAfterViewInit() {
-    this.peers$.subscribe(peers => {
-      this.loadLatLon(peers);
-    });
+    
   }
 
   loadPeers() {
-    this.http.get<Peer[]>(`/peer?network=${this.network}`).subscribe(peers => {
+    this.http.get<Peer[]>(`http://127.0.0.1:1800/peer?network=${this.network}`).subscribe(peers => {
       const peerList: Peer[] = [];
   
       for (const peer of peers) {
@@ -91,6 +88,8 @@ export class AppComponent implements AfterViewInit {
   
       this.totalNodes = peerList.length;
       this.peers$ = new Observable<Peer[]>(observer => observer.next(peerList.sort((a, b) => b.last_seen.secs_since_epoch - a.last_seen.secs_since_epoch)));
+
+      this.loadLatLon(peers) ;
     });
   }
 
@@ -103,6 +102,7 @@ export class AppComponent implements AfterViewInit {
   }
   async loadLatLon(peerList: Peer[]) {
     const CATCH_KEY = '__catchLocation';
+    console.log("PeerList: ", peerList);
     let citys = this.getCityAndCountry(peerList);
 
     let catchLocation = localStorage.getItem(CATCH_KEY) || {} as CatchLocation;
@@ -198,8 +198,8 @@ export class AppComponent implements AfterViewInit {
     });
 
     data = data.sort((prev: RankingsDataItem, next: RankingsDataItem) => next.value - prev.value);
-    data.length = 10;
-    
+    data = data.slice(0, 10);
+
     chart
       .interval()
       .data(data)
