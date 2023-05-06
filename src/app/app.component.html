@@ -16,29 +16,45 @@
       </div>
     </nz-header>
     <nz-content>
-      <nz-table [nzData]="(peers$ | async) || []" [nzPageSize]="pageSize" [nzFrontPagination]="false">
-        <thead>
-          <tr>
-            <th>IP</th>
-            <th>Version</th>
-            <th>Last Seen</th>
-            <th>Country/Region</th>
-            <th>City</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let peer of peers$ | async">
-            <td nz-tooltip [nzTooltipTitle]="peer.address">{{ peer.ip }}</td>
-            <td>{{ peer.version }}</td>
-            <td>{{ peer.last_seen.secs_since_epoch | timeElapsed}}</td>
-            <td>
-              <span *ngIf="peer.country" class="fi fi-{{peer.country.toLowerCase()}}"></span>
-              {{ peer.country ? peer.country : '-' }}
-            </td>
-            <td>{{ peer.city }}</td>
-          </tr>
-        </tbody>
-      </nz-table>
+      <div class="content">
+        <div class="left-table">
+          <nz-table [nzData]="(peers$ | async) || []" [nzPageSize]="pageSize" [nzFrontPagination]="false">
+            <thead>
+              <tr>
+                <th>IP</th>
+                <th>Version</th>
+                <th>Last Seen</th>
+                <th>Country/Region</th>
+                <th>City</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let peer of peers$ | async">
+                <td nz-tooltip [nzTooltipTitle]="peer.address">{{ peer.ip }}</td>
+                <td>{{ peer.version }}</td>
+                <td>{{ peer.last_seen.secs_since_epoch | timeElapsed}}</td>
+                <td>
+                  <span *ngIf="peer.country" class="fi fi-{{peer.country.toLowerCase()}}"></span>
+                  {{ peer.country ? peer.country : '-' }}
+                </td>
+                <td>{{ peer.city }}</td>
+              </tr>
+            </tbody>
+          </nz-table>
+        </div>
+        <div class="right-graph">
+          <div class="graph-container">
+            <h3>Nodes distribution</h3>
+            <div id="mapGraph" class="maps">
+              <span>Data loading...</span>
+            </div>
+            <h3>Node ranking</h3>
+            <div id="rankingGraph" class="rankings">
+              <span>Data loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </nz-content>
     <nz-footer>
       Copyright&copy;2023 Nervos Foundation.

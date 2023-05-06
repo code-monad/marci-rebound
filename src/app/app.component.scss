@@ -66,4 +66,45 @@
     }
   }
 
- 
+ .content{
+  width: 100%;
+  display: flex;
+
+  .left-table{
+    width: 75vw;
+    height: calc(100vh - 64px - 70px);
+    overflow-y: auto;
+  }
+
+  .right-graph{
+    width: 25vw;
+    background-color: white;
+
+    .graph-container{
+      h3 {
+        margin: 10px 15px;
+      }
+
+      .maps,
+      .rankings{
+        >span {
+          display: none;
+        }
+        
+        >span:only-child {
+          display: flex;
+          height: 100%;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
+      .maps{
+        height: 350px;
+      }
+      .rankings{
+        height: 400px;
+      } 
+    }
+  }
+}
