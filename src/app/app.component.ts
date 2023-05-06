@@ -62,7 +62,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   loadPeers() {
-    this.http.get<Peer[]>(`http://127.0.0.1:1800/peer?network=${this.network}`).subscribe(peers => {
+    this.http.get<Peer[]>(`/peer?network=${this.network}`).subscribe(peers => {
       const peerList: Peer[] = [];
   
       for (const peer of peers) {
@@ -102,7 +102,6 @@ export class AppComponent implements AfterViewInit {
   }
   async loadLatLon(peerList: Peer[]) {
     const CATCH_KEY = '__catchLocation';
-    console.log("PeerList: ", peerList);
     let citys = this.getCityAndCountry(peerList);
 
     let catchLocation = localStorage.getItem(CATCH_KEY) || {} as CatchLocation;
