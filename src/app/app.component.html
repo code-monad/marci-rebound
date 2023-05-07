@@ -6,9 +6,9 @@
       <div class="header-container">
         <div class="logo-container flex items-center">
           <img src="assets/img/icon.png" alt="logo" class="logo w-8 h-8 mr-2" />
-          <h1 class="text-lg font-semibold text-white">CKB Nodes Distribution</h1>
+          <h1 class="text-lg font-semibold text-white">CKB Full Node Probe</h1>
         </div>
-        <span class="totalnodes">Currently Online Nodes: {{ totalNodes }} nodes</span>
+        <span class="totalnodes">Detected Online Nodes: {{ totalNodes }} nodes</span>
         <div class="button-container flex items-center ml-auto">
           <button nz-button [nzType]="network === 'mirana' ? 'primary' : 'default'" (click)="changeNetwork('mirana')" class="network-button">Mirana</button>
           <button nz-button [nzType]="network === 'pudge' ? 'primary' : 'default'" (click)="changeNetwork('pudge')" class="network-button">Pudge</button>
@@ -21,34 +21,32 @@
           <nz-table [nzData]="(peers$ | async) || []" [nzPageSize]="pageSize" [nzFrontPagination]="false">
             <thead>
               <tr>
-                <th>IP</th>
-                <th>Version</th>
-                <th>Last Seen</th>
                 <th>Country/Region</th>
                 <th>City</th>
+                <th>Last Seen</th>
+                <th>Version</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let peer of peers$ | async">
-                <td nz-tooltip [nzTooltipTitle]="peer.address">{{ peer.ip }}</td>
-                <td>{{ peer.version }}</td>
-                <td>{{ peer.last_seen.secs_since_epoch | timeElapsed}}</td>
                 <td>
                   <span *ngIf="peer.country" class="fi fi-{{peer.country.toLowerCase()}}"></span>
                   {{ peer.country ? peer.country : '-' }}
                 </td>
                 <td>{{ peer.city }}</td>
+                <td>{{ peer.last_seen.secs_since_epoch | timeElapsed}}</td>
+                <td>{{ peer.version }}</td>
               </tr>
             </tbody>
           </nz-table>
         </div>
         <div class="right-graph">
           <div class="graph-container">
-            <h3>Nodes distribution</h3>
+            <h3>Nodes Map</h3>
             <div id="mapGraph" class="maps">
               <span>Data loading...</span>
             </div>
-            <h3>Node ranking</h3>
+            <h3>Count by Country</h3>
             <div id="rankingGraph" class="rankings">
               <span>Data loading...</span>
             </div>
@@ -56,9 +54,5 @@
         </div>
       </div>
     </nz-content>
-    <nz-footer>
-      Copyright&copy;2023 Nervos Foundation.
-      All Rights Reserved.
-    </nz-footer>
   </nz-layout>
 </nz-layout>
