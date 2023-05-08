@@ -7,7 +7,8 @@ import { map } from 'rxjs/operators';
 interface Peer {
   id: number;
   ip: string;
-  version: string;
+  version: string; // 0.109.0 (bd8937b 2023-04-19)
+  version_short: string; // 0.109.0
   address: string;
   last_seen: {
     secs_since_epoch: number;
@@ -40,6 +41,10 @@ interface RankingsDataItem {
   label: string;
 }
 
+interface VersionCount {
+  [key: string]: number;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -50,6 +55,7 @@ export class AppComponent implements AfterViewInit {
   pageSize = 10;
   network = 'mirana';
   totalNodes = 0;
+  versionCount: VersionCount = {};
 
   constructor(private http: HttpClient) {
     this.loadPeers();
@@ -62,9 +68,9 @@ export class AppComponent implements AfterViewInit {
   }
 
   loadPeers() {
-    this.http.get<Peer[]>(`/peer?network=${this.network}`).subscribe(peers => {
+    this.http.get<Peer[]>(`http://127.0.0.1:1800/peer?network=${this.network}`).subscribe(peers => {
       const peerList: Peer[] = [];
-  
+      const versionCount: VersionCount = {};
       for (const peer of peers) {
         if (peer.country) {
           peerList.push(peer);
@@ -84,11 +90,16 @@ export class AppComponent implements AfterViewInit {
             });
           }
         }
+        if (peer.version_short in versionCount) {
+            versionCount[peer.version_short]++;
+          } else {
+            versionCount[peer.version_short] = 1;
+          }
       }
   
       this.totalNodes = peerList.length;
       this.peers$ = new Observable<Peer[]>(observer => observer.next(peerList.sort((a, b) => b.last_seen.secs_since_epoch - a.last_seen.secs_since_epoch)));
-
+      this.versionCount = versionCount;
       this.loadLatLon(peers) ;
     });
   }
