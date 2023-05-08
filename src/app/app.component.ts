@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Chart } from '@antv/g2';
@@ -56,7 +56,7 @@ interface VersionDataItem {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
   peers$: Observable<Peer[]> = new Observable<Peer[]>(observer => observer.next([]));
   pageSize = 10;
   network = 'mirana';
@@ -68,9 +68,6 @@ export class AppComponent implements AfterViewInit {
     setInterval(() => {
       this.loadPeers();
     }, 20000);
-  }
-  ngAfterViewInit() {
-
   }
 
   loadPeers() {
