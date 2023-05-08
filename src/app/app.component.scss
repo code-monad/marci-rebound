@@ -72,7 +72,7 @@
 
   .left-table{
     width: 75vw;
-    height: calc(100vh - 64px - 70px);
+    height: calc(100vh - 64px);
     overflow-y: auto;
   }
 
@@ -86,7 +86,8 @@
       }
 
       .maps,
-      .rankings{
+      .rankings,
+      .versions {
         >span {
           display: none;
         }
@@ -99,12 +100,13 @@
         }
       }
 
-      .maps{
-        height: 350px;
+      --baseHeight: calc(100vh - 64px - 26px * 3 - 70px);
+
+      .maps,
+      .rankings,
+      .versions {
+        height: calc(var(--baseHeight) / 3);
       }
-      .rankings{
-        height: 400px;
-      } 
     }
   }
 }

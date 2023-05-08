@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Chart } from '@antv/g2';
@@ -56,7 +56,7 @@ interface VersionDataItem {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
   peers$: Observable<Peer[]> = new Observable<Peer[]>(observer => observer.next([]));
   pageSize = 10;
   network = 'mirana';
@@ -69,12 +69,9 @@ export class AppComponent implements AfterViewInit {
       this.loadPeers();
     }, 20000);
   }
-  ngAfterViewInit() {
-
-  }
 
   loadPeers() {
-    this.http.get<Peer[]>(`http://127.0.0.1:1800/peer?network=${this.network}`).subscribe(peers => {
+    this.http.get<Peer[]>(`/peer?network=${this.network}`).subscribe(peers => {
       const peerList: Peer[] = [];
       const versionCount: VersionCount = {};
       for (const peer of peers) {
@@ -107,6 +104,7 @@ export class AppComponent implements AfterViewInit {
       this.peers$ = new Observable<Peer[]>(observer => observer.next(peerList.sort((a, b) => b.last_seen.secs_since_epoch - a.last_seen.secs_since_epoch)));
       this.versionCount = versionCount;
       this.loadLatLon(peers);
+      this.renderVersionGraph(versionCount);
     });
   }
 
@@ -195,20 +193,35 @@ export class AppComponent implements AfterViewInit {
     }, [] as RankingsDataItem[]);
   }
   renderMapGraph(catchLocation: CatchLocation, peerList: Peer[]) {
-    const L = (window as any).L;
-    const map = L.map('mapGraph').setView([0, 0], 1);
+    const container = 'mapGraph';
+    if (!document.getElementById(container)) return;
+
+    let map;
+    const _window = window as any;
+    const L = _window.L;
     const { heatMapData, rankingsGraphData } = this.paseGraphData(catchLocation, peerList);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    if (_window._map) map = _window._map;
+    else {
+      map = L.map(container).setView([0, 0], 1);
+      _window._map = map;
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+      map.addControl(L.control.fullscreen());
+    }
+
+    document.querySelector(".leaflet-heatmap-layer")?.remove();
     L.heatLayer(this.deconstructHeatMapData(heatMapData), { radius: 15 }).addTo(map);
-    map.addControl(L.control.fullscreen());
 
     this.renderRankingsGraph(rankingsGraphData);
   }
   renderRankingsGraph(rankingsGraphData: RankingsGraphData) {
+    const container = 'rankingGraph';
+    if (!document.getElementById(container)) return;
+
     let data = this.deconstructRankingsGraphData(rankingsGraphData);
     const chart = new Chart({
-      container: 'rankingGraph',
+      container,
       theme: 'classic',
       autoFit: true
     });
@@ -229,6 +242,36 @@ export class AppComponent implements AfterViewInit {
       })
       .tooltip({
         title: (d: RankingsDataItem) => `${d.label} - ${d.name}`
+      });
+
+    chart.render();
+  }
+  renderVersionGraph(versionCount: VersionCount) {
+    const container = 'versionGraph';
+    if (!document.getElementById(container)) return;
+
+    let data = Object.keys(versionCount).map(key => ({ version: key.split('(')[0], value: versionCount[key] })).sort((a, b) => b.value - a.value);
+
+    const chart = new Chart({
+      container,
+      theme: 'classic',
+      autoFit: true,
+      paddingLeft: 100,
+    });
+
+    chart.coordinate({ transform: [{ type: 'transpose' }] });
+    data = data.slice(0, 10);
+
+    chart
+      .interval()
+      .data(data)
+      .encode('x', 'version')
+      .encode('y', 'value')
+      .label({
+        text: 'value',
+        style: {
+          fill: '#fff',
+        }
       });
 
     chart.render();
