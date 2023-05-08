@@ -1,7 +1,7 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Chart} from '@antv/g2';
+import { Chart } from '@antv/g2';
 import { map } from 'rxjs/operators';
 
 interface Peer {
@@ -45,6 +45,12 @@ interface VersionCount {
   [key: string]: number;
 }
 
+interface VersionDataItem {
+  version: string;
+  value: number;
+  label: string;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -61,10 +67,10 @@ export class AppComponent implements AfterViewInit {
     this.loadPeers();
     setInterval(() => {
       this.loadPeers();
-    }, 10000);
+    }, 20000);
   }
   ngAfterViewInit() {
-    
+
   }
 
   loadPeers() {
@@ -91,16 +97,16 @@ export class AppComponent implements AfterViewInit {
           }
         }
         if (peer.version_short in versionCount) {
-            versionCount[peer.version_short]++;
-          } else {
-            versionCount[peer.version_short] = 1;
-          }
+          versionCount[peer.version_short]++;
+        } else {
+          versionCount[peer.version_short] = 1;
+        }
       }
-  
+
       this.totalNodes = peerList.length;
       this.peers$ = new Observable<Peer[]>(observer => observer.next(peerList.sort((a, b) => b.last_seen.secs_since_epoch - a.last_seen.secs_since_epoch)));
       this.versionCount = versionCount;
-      this.loadLatLon(peers) ;
+      this.loadLatLon(peers);
     });
   }
 
@@ -192,7 +198,7 @@ export class AppComponent implements AfterViewInit {
     const L = (window as any).L;
     const map = L.map('mapGraph').setView([0, 0], 1);
     const { heatMapData, rankingsGraphData } = this.paseGraphData(catchLocation, peerList);
-    
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
     L.heatLayer(this.deconstructHeatMapData(heatMapData), { radius: 15 }).addTo(map);
     map.addControl(L.control.fullscreen());
@@ -224,7 +230,7 @@ export class AppComponent implements AfterViewInit {
       .tooltip({
         title: (d: RankingsDataItem) => `${d.label} - ${d.name}`
       });
-    
+
     chart.render();
   }
 }
